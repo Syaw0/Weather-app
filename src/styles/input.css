@@ -1,0 +1,53 @@
+
+  .search input {
+    background: none;
+    border: none;
+    outline: none;
+    width: 28px;
+    min-width: 0;
+    padding: 0;
+    z-index: 1;
+    position: relative;
+    line-height: 18px;
+    margin: 5px 0;
+    font-size: 14px;
+    -webkit-appearance: none;
+    font-family: "Mukta Malar";
+    transition: all 0.6s ease;
+    cursor: pointer;
+    color: var(--co2);
+  }
+  .search input + div {
+    position: relative;
+    height: 28px;
+    width: 100%;
+    margin: -28px 0 0 0;
+  }
+  .search input + div svg {
+    display: block;
+    position: absolute;
+    height: 28px;
+    width: 125px;
+    right: 0;
+    top: 0;
+    fill: none;
+    stroke: var(--co2);
+    stroke-width: 1.5px;
+    stroke-dashoffset: 271.908;
+    stroke-dasharray: 59 212.908;
+    transition: all 0.6s ease;
+  }
+
+  .search input:not(:placeholder-shown), .search input:focus {
+    width: 125px;
+    padding: 0 4px;
+    cursor: text;
+  }
+  .search input:not(:placeholder-shown) + div svg, .search input:focus + div svg {
+    stroke-dasharray: 150 212.908;
+    stroke-dashoffset: 300;
+  }
+  
+  ::selection {
+    background: rgba(255, 255, 255, 0.2);
+  }

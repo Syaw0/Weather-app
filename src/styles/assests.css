@@ -1,0 +1,29 @@
+:root{
+    /* colors */
+    --co1 : #000000 ; 
+    --co2 : #ffffff ; 
+    --co3 : #73775b ;
+    --co4 : #c2ff61
+    
+}
+
+@font-face {
+    font-family: lora-r;
+    src: url("../assests/fonts/Lora-Regular.ttf");
+}
+@font-face {
+    font-family: lora-ri;
+    src: url("../assests/fonts/Lora-Italic.ttf");
+}
+@font-face {
+    font-family: lora-b;
+    src: url("../assests/fonts/Lora-Bold.ttf");
+}
+@font-face {
+    font-family: lora-bi;
+    src: url("../assests/fonts/Lora-BoldItalic.ttf");
+}
+@font-face {
+    font-family: ds;
+    src: url("../assests/fonts/DancingScript-Regular.ttf");
+}
