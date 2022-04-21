@@ -39,6 +39,7 @@ body{
     letter-spacing: 1.2px;
     font-family: "ds";
         text-shadow: 0.5px 0.5px 0.5px #adabab;
+        /* font-size: 12px; */
 
 }
 .search{
@@ -49,6 +50,7 @@ body{
     position: relative;
     width: 100%;
     height: 100%;
+    
     
 }
 
@@ -128,6 +130,7 @@ font-family: "lora-ri";
     display: none;
 }
 #loading-con-header{
+    cursor: default;
     font-family: "lora-ri";
     margin-bottom: 1rem;
     opacity: 0;
@@ -142,9 +145,88 @@ font-family: "lora-ri";
     
 }
 
+#error-con{
+    position: relative;
+    width: 100%;
+    height: 85%;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    animation: scale-down-center 0.7s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+}
+
+#error-con > * {
+    cursor: default;
+}
+#error-info{
+    font-size: 12px;
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    bottom: 2rem;
+    order: 1;
+
+    
+}
+#error{ font-family: "lora-bi";
+padding: 0.5rem;}
+
+#error span{
+    color: var(--co4);
+}
+#error-s{
+    font-family: "lora-ri"
+}
+#error-illustration{
+    height: 85%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    order: 0;
+}
+
+
 @media only screen and (max-width : 500px){
 
 }
+
+@media only screen and (min-width : 305px){
+    #error-info{
+        font-size: 15px;
+        position: static;
+        
+        
+    }
+
+}
+
+@media only screen and (min-width : 700px){
+    #error-info{
+        font-size: 18px;
+        
+        
+    }
+    #error-con{
+        flex-direction: row;
+    }
+    #error-info{
+        order: 0;
+        
+    }
+    #error-illustration{
+       order: 1;
+    }
+
+    
+    
+}
+
 
 @media only screen and (min-width : 340px){
     #loading-con{
@@ -171,6 +253,9 @@ font-family: "lora-ri";
     
     #home-content-header3{
         padding:3.5rem 0rem 0rem 5rem;
+    }
+    #error-info{
+        font-size: 22px;
     }
 
 }
