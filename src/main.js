@@ -1,6 +1,133 @@
 import "./styles/main.css"
 import svg2 from "./assests/rareError.svg"
 import svg1 from "./assests/searchError.svg"
+import sunnySvg from "./assests/sunny.svg"
+import mtemp from "./assests/maxTemp.svg"
+import mitemp from "./assests/minTemp.svg"
+
+let isFristTimetoResize = 0
+
+
+window.addEventListener("resize" , ()=>{
+    
+    if(window.innerWidth<500){
+        isFristTimetoResize = 1
+        dailyInfo.style.display = "flex"
+        detailInfo.style.display = "none"
+        hourlyInfo.style.display = "flex"
+    }
+    if(window.innerWidth > 500 && isFristTimetoResize == 1){
+        console.log("ss")
+        dailyInfo.style.display = "none"
+        detailInfo.style.display = "none"
+        hourlyInfo.style.display = "flex"
+        navHourly.style ="border-bottom:1px solid var(--co4) ; color:var(--co4)"
+        navDaily.style ="border-bottom:none; color:var(--co2)"
+        navDetail.style ="border-bottom:none ; color:var(--co2)"
+        isFristTimetoResize = 0
+    }
+} )
+
+
+let navHourly = document.getElementById("topnav-button-hourly")
+let navDaily = document.getElementById("topnav-button-daily")
+let navDetail = document.getElementById("topnav-button-detail")
+
+
+
+navHourly.addEventListener("click" , navbuttonHandle)
+navDaily.addEventListener("click" , navbuttonHandle)
+navDetail.addEventListener("click" , navbuttonHandle)
+
+function navbuttonHandle(e){
+    let element = e.target.innerHTML.trim()
+    // console.log(element.trim())
+    switch(element){                            // i think i can do better for this block of code (write a function automatlicly do this)
+        case "Hourly":
+            dailyInfo.style.display = "none"
+            detailInfo.style.display = "none"
+            hourlyInfo.style.display = "flex"
+            navHourly.style ="border-bottom:1px solid var(--co4) ; color:var(--co4) ;transition:0.5s all"
+            navDaily.style ="border-bottom:none; color:var(--co2) ;transition:0.5s all"
+            navDetail.style ="border-bottom:none ; color:var(--co2); transition:0.5s all"
+            break;
+
+        case "Daily":
+            detailInfo.style.display = "none"
+            hourlyInfo.style.display = "none"
+            dailyInfo.style.display = "flex"
+            navDaily.style ="border-bottom:1px solid var(--co4) ; color:var(--co4) ; transition:0.5s all"
+            navHourly.style ="border-bottom:none; color:var(--co2);transition:0.5s all"
+            navDetail.style ="border-bottom:none ; color:var(--co2);transition:0.5s all"
+            break;
+        
+        case "Detail":
+            dailyInfo.style.display = "none"
+            hourlyInfo.style.display = "none"
+            detailInfo.style.display = "flex"
+            navDetail.style ="border-bottom:1px solid var(--co4) ; color:var(--co4);transition:0.5s all"
+            navDaily.style ="border-bottom:none ; color:var(--co2);transition:0.5s all"
+            navHourly.style ="border-bottom:none; color:var(--co2);transition:0.5s all"
+            break;
+                
+    }
+}
+
+
+let hourlyInfo = document.getElementById("information-hourly-con")
+let dailyInfo = document.getElementById("information-daily-con")
+let detailInfo = document.getElementById("information-detail-con")
+
+
+
+
+
+
+
+
+
+const monthNames = ["January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+];
+let infos = document.getElementById("information")
+
+//horizontal scroll 
+
+let hourlyMInfo = document.getElementById("information-hourly-mcon")
+let dailyMInfo = document.getElementById("information-daily-mcon")
+
+hourlyInfo.addEventListener("wheel", (e)=>{
+    hourlyInfo.scrollLeft += e.deltaY
+})
+
+dailyInfo.addEventListener("wheel", (e)=>{
+    dailyInfo.scrollLeft += e.deltaY
+})
+
+
+for(let i = 0 ; i != dailyMInfo.getElementsByTagName("div").length ; i++){
+    dailyMInfo.getElementsByTagName("div")[i].style.animation = `slide-in-top 0.6s cubic-bezier(0.250, 0.460, 0.450, 0.940) ${i*0.07}s  both`
+}
+
+for(let i = 0 ; i != hourlyMInfo.getElementsByTagName("div").length ; i++){
+    hourlyMInfo.getElementsByTagName("div")[i].getElementsByTagName("h4")[0].innerHTML = `${i+1}AM`
+    hourlyMInfo.getElementsByTagName("div")[i].style.animation = `slide-in-top 0.6s cubic-bezier(0.250, 0.460, 0.450, 0.940) ${i*0.07}s  both`
+}
+
+
+
+
+
+let date =  new Date()
+console.log(date)
+
+document.getElementById("header-date").innerHTML = `<h4>${monthNames[date.getMonth()]} ${date.getDate()} ${date.getFullYear()}</h4>`
+
+let sunnySVG = new Image() 
+sunnySVG.src = sunnySvg
+
+document.getElementById("header-icon").appendChild(sunnySVG)
+
 
 let input = document.getElementById("header-input")
 input.addEventListener("keydown" , key_handle)
@@ -18,7 +145,7 @@ let img = new Image()
 img.src = svg2;
 img.id = "error-illustration"
 
-console.log(img)
+
 
 function key_handle(e){
     // e.key == "Enter" ? input.value = "" : null 
@@ -33,22 +160,19 @@ function key_handle(e){
         loader.style.animation = "scale-down-center 0.6s cubic-bezier(0.250, 0.460, 0.450, 0.940) 1.5s both"
         
     }
-    if(e.key == "e"){
-        exitAnimation()
-    }
 }
 
 function exitAnimation(){
     setTimeout(()=>{loadingCon.style.display = "none"} , 600)
     loadingHead.style.animation = "fade 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both"
     loader.style.animation = "fade 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both"
-    setTimeout(()=>{errorCon.style.display = "flex"} , 1200)
-    errorCon.style.animation = "scale-down-center 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both"
+    setTimeout(()=>{infos.style.display = "flex"} , 600)
+    infos.style.animation = "scale-down-center 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both"
 }
 
 errorCon.addEventListener("click" , ()=>{
-    setTimeout(()=>{errorCon.style.display = "none"} , 600)
-    errorCon.style.animation = "fade 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both"
+    setTimeout(()=>{infos.style.display = "none"} , 600)
+    infos.style.animation = "scale-down-center 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both"
     // errorCon.removeChild(errorCon.getElementsByTagName("svg")[0])
     // errorCon.appendChild(img)
 
