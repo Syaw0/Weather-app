@@ -10,11 +10,11 @@ window.addEventListener("resize" , ()=>{
     if(window.innerWidth<500){
         isFristTimetoResize = 1
         dailyInfo.style.display = "flex"
-        detailInfo.style.display = "none"
+        detailInfo.style.display = "flex"
+        // detailInfo.style.display = "flex-box"
         hourlyInfo.style.display = "flex"
     }
     if(window.innerWidth > 500 && isFristTimetoResize == 1){
-        console.log("ss")
         dailyInfo.style.display = "none"
         detailInfo.style.display = "none"
         hourlyInfo.style.display = "flex"
@@ -90,6 +90,9 @@ let infos = document.getElementById("information")
 
 //horizontal scroll 
 
+
+
+let detailMInfo = document.getElementById("information-detail-mcon")
 let hourlyMInfo = document.getElementById("information-hourly-mcon")
 let dailyMInfo = document.getElementById("information-daily-mcon")
 
@@ -101,9 +104,17 @@ dailyInfo.addEventListener("wheel", (e)=>{
     dailyInfo.scrollLeft += e.deltaY
 })
 
+detailInfo.addEventListener("wheel", (e)=>{
+    detailInfo.scrollLeft += e.deltaY
+})
+
 
 for(let i = 0 ; i != dailyMInfo.getElementsByTagName("div").length ; i++){
     dailyMInfo.getElementsByTagName("div")[i].style.animation = `slide-in-top 0.6s cubic-bezier(0.250, 0.460, 0.450, 0.940) ${i*0.07}s  both`
+}
+
+for(let i = 0 ; i != detailInfo.getElementsByTagName("div").length ; i++){
+    detailInfo.getElementsByTagName("div")[i].style.animation = `slide-in-top 0.6s cubic-bezier(0.250, 0.460, 0.450, 0.940) ${i*0.07}s  both`
 }
 
 for(let i = 0 ; i != hourlyMInfo.getElementsByTagName("div").length ; i++){
@@ -165,3 +176,23 @@ errorCon.addEventListener("click" , ()=>{
 })
 loadingCon.addEventListener("click" , ()=>{exitAnimation()} )
 
+
+//detail button handle 
+let detailCon = document.getElementById("information-detail-con")
+let deatilButton = document.getElementById("information-detail-toggle")
+let deatilExitButton = document.getElementById("information-detail-exit")
+
+
+deatilButton.addEventListener("click" , ()=>{
+    console.log(detailCon.clientHeight)
+    if(detailCon.clientHeight < 50 ){
+        detailCon.style.animation = "increse-heigth 0.7s cubic-bezier(0.250, 0.460, 0.450, 0.940)  both "
+        document.getElementById("information-detail-upSvg").style.display = "none"
+        document.getElementById("information-detail-downSvg").style.display = "flex"
+    }else{
+        detailCon.style.animation = "decrese-heigth 0.7s cubic-bezier(0.250, 0.460, 0.450, 0.940)  both "
+        setTimeout(()=>{detailCon.style.animation = "none"} , 1000)
+        document.getElementById("information-detail-upSvg").style.display = "flex"
+        document.getElementById("information-detail-downSvg").style.display = "none"
+    }
+})
