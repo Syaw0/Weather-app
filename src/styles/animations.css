@@ -17,13 +17,13 @@
       
               /* transform: scale(1); */
               opacity: 1;
-              display: none;
+              /* display: none; */
     }
     100% {
       
               /* transform: scale(0.9); */
               opacity: 0;
-              display: flex;
+              /* display: flex; */
     }
   }
   

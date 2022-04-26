@@ -1,5 +1,162 @@
 import "./styles/main.css"
 
+class RequestData{
+    constructor(city) {
+        this.city  = city
+    };
+    sendRequest(){
+
+        loading = new LoadingPage(this.city)
+        loading.showLoading()
+        setTimeout(()=>{
+            fetch(`http://api.weatherapi.com/v1/forecast.json?key=082140be64aa4d8f983211532220404&q=${this.city}&aqi=yes&days=10`)
+            .then(response => {
+                if(response.status == 200){
+                    loading.hide()
+                    information.showInformation()
+                }else{
+                    error = new ErrorPage(response.status)
+                    error.showError()
+                }
+                return response.json()
+            })
+            .then(data => console.log(data))
+        },2000)
+    }
+}
+
+
+class HomePage{
+    constructor(){
+        this.display = "show"
+        this.homeCon = document.getElementById("home")
+        this.homeContentHeader1 = document.getElementById("home-content-header1")
+        this.homeContentHeader3 = document.getElementById("home-content-header3")
+        this.homeIllustration = document.getElementById("home-illustration")
+        this.isFrist = true
+
+    }
+    showHome(){
+        this.isFrist ? null : showupOnePage()
+        this.isFrist = false
+        this.display = "show"
+
+        this.homeCon.style.display = "flex"
+        this.homeIllustration.style.animation = "scale-down-center 1.2s cubic-bezier(0.250, 0.460, 0.450, 0.940) both"
+        this.homeContentHeader1.style.animation = "scale-down-center 1s cubic-bezier(0.250, 0.460, 0.450, 0.940) 1s both"
+        this.homeContentHeader3.style.animation = "scale-down-center 1s cubic-bezier(0.250, 0.460, 0.450, 0.940) 1.4s both"
+    }
+    hide(){
+        this.display = "none"
+
+        this.homeCon.style.animation = "fade 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both"
+        setTimeout(()=>{this.homeCon.style.display = "none"} , 600)
+    }
+}
+
+
+
+class LoadingPage{
+    constructor(city){
+        this.display = "none"
+
+        this.cityName = city
+        this.loadingCon = document.getElementById("loading-con")
+        this.loadingConHeader = document.getElementById("loading-con-header")
+        this.loader = document.getElementById("loading")
+
+        this.loadingConHeader.innerHTML = `measuring the weather in <span>${this.cityName}</span> `
+        // this.showLoading()
+    }
+
+    showLoading(){
+        showupOnePage()
+        this.display = "show"
+
+        this.loadingCon.style.display = "flex"
+        this.loadingConHeader.style.animation = "scale-down-center 0.6s cubic-bezier(0.250, 0.460, 0.450, 0.940) 1s both"
+        this.loader.style.animation = "scale-down-center 0.6s cubic-bezier(0.250, 0.460, 0.450, 0.940) 1.5s both"
+    }
+    hide(){
+        this.display = "none"
+
+        setTimeout(()=>{this.loadingCon.style.display = "none"},1000)
+        this.loadingConHeader.style.animation = "fade 0.9s cubic-bezier(0.250, 0.460, 0.450, 0.940)  both"
+        this.loader.style.animation = "fade  0.9s cubic-bezier(0.250, 0.460, 0.450, 0.940)  both"
+    }
+}
+
+class ErrorPage{
+    constructor(error) {
+        this.display = "none"
+
+        this.erorr = error 
+        this.errorCon = document.getElementById("error-con")
+        // this.showError()
+
+    }
+
+    showError(){
+        showupOnePage()
+        this.display = "show"
+
+        this.errorCon.style.display = "flex"
+        this.errorCon.style.animation = "scale-down-center 0.6s cubic-bezier(0.250, 0.460, 0.450, 0.940) 1s both"
+    }
+    hide(){
+        this.display = "none"
+
+        setTimeout(()=>{this.errorCon.style.display = "none"},1000)
+        this.errorCon.style.animation = "fade 0.9s cubic-bezier(0.250, 0.460, 0.450, 0.940)  both"
+
+    }
+}
+
+class InformationPage{
+    constructor(){
+
+    }
+
+    showInformation(){
+        console.log("information will displaied")
+    }
+
+    hide(){}
+}
+
+
+
+
+let loading = new LoadingPage()
+let error = new ErrorPage()
+let home = new HomePage()
+let information = new InformationPage()
+home.showHome()
+
+
+function showupOnePage(){
+    let list = [loading , error , home , information]
+    for(let i = 0 ; i != list.length ; i++){
+        if(list[i].display == "show"){
+            list[i].hide()
+        }
+    }
+}
+
+
+
+
+let input = document.getElementById("header-input")
+input.addEventListener("keydown" , key_handle)
+
+function key_handle(e){
+    if ( e.key == "Enter"){
+        let request = new RequestData( e.target.value )
+        request.sendRequest()
+        input.value = ""
+        input.blur()
+    }
+}
 
 
 let isFristTimetoResize = 0
@@ -71,11 +228,6 @@ function navbuttonHandle(e){
 }
 
 
-let hourlyInfo = document.getElementById("information-hourly-con")
-let dailyInfo = document.getElementById("information-daily-con")
-let detailInfo = document.getElementById("information-detail-con")
-
-
 
 
 
@@ -86,15 +238,19 @@ let detailInfo = document.getElementById("information-detail-con")
 const monthNames = ["January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December"
 ];
+
 let infos = document.getElementById("information")
 
-//horizontal scroll 
 
-
+let hourlyInfo = document.getElementById("information-hourly-con")
+let dailyInfo = document.getElementById("information-daily-con")
+let detailInfo = document.getElementById("information-detail-con")
 
 let detailMInfo = document.getElementById("information-detail-mcon")
 let hourlyMInfo = document.getElementById("information-hourly-mcon")
 let dailyMInfo = document.getElementById("information-daily-mcon")
+
+//horizontal scroll 
 
 hourlyInfo.addEventListener("wheel", (e)=>{
     hourlyInfo.scrollLeft += e.deltaY
@@ -108,6 +264,7 @@ detailInfo.addEventListener("wheel", (e)=>{
     detailInfo.scrollLeft += e.deltaY
 })
 
+//animation for items 
 
 for(let i = 0 ; i != dailyMInfo.getElementsByTagName("div").length ; i++){
     dailyMInfo.getElementsByTagName("div")[i].style.animation = `slide-in-top 0.6s cubic-bezier(0.250, 0.460, 0.450, 0.940) ${i*0.07}s  both`
@@ -127,54 +284,9 @@ for(let i = 0 ; i != hourlyMInfo.getElementsByTagName("div").length ; i++){
 
 
 let date =  new Date()
-console.log(date)
 
 document.getElementById("header-date").innerHTML = `<h4>${monthNames[date.getMonth()]} ${date.getDate()} ${date.getFullYear()}</h4>`
 
-
-
-
-let input = document.getElementById("header-input")
-input.addEventListener("keydown" , key_handle)
-let home = document.getElementById("home")
-let loadingHead = document.getElementById("loading-con-header")
-let loader = document.getElementById("loading")
-let loadingCon = document.getElementById("loading-con")
-let errorCon = document.getElementById("error-con")
-
-
-
-
-function key_handle(e){
-    // e.key == "Enter" ? input.value = "" : null 
-    if ( e.key == "Enter"){
-        errorCon.style.display = "none"
-        input.value = ""
-        input.blur()
-        loadingCon.style.display = "flex"
-        home.style.animation = "fade 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both"
-        setTimeout(()=>{home.style.display = "none"} , 600)
-        loadingHead.style.animation = "scale-down-center 0.6s cubic-bezier(0.250, 0.460, 0.450, 0.940) 1s both"
-        loader.style.animation = "scale-down-center 0.6s cubic-bezier(0.250, 0.460, 0.450, 0.940) 1.5s both"
-        
-    }
-}
-
-function exitAnimation(){
-    setTimeout(()=>{loadingCon.style.display = "none"} , 600)
-    loadingHead.style.animation = "fade 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both"
-    loader.style.animation = "fade 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both"
-    setTimeout(()=>{infos.style.display = "flex"} , 600)
-    infos.style.animation = "scale-down-center 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both"
-}
-
-errorCon.addEventListener("click" , ()=>{
-    setTimeout(()=>{infos.style.display = "none"} , 600)
-    infos.style.animation = "scale-down-center 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both"
-
-
-})
-loadingCon.addEventListener("click" , ()=>{exitAnimation()} )
 
 
 //detail button handle 
