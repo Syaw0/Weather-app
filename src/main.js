@@ -1,26 +1,52 @@
 import "./styles/main.css"
 
+const monthNames = ["January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+];
+
+
+// let date =  new Date()
+
+// document.getElementById("header-date").innerHTML = `
+
+
+
+
 class RequestData{
     constructor(city) {
         this.city  = city
     };
     sendRequest(){
+        showupOnePage()
 
         loading = new LoadingPage(this.city)
         loading.showLoading()
         setTimeout(()=>{
-            fetch(`http://api.weatherapi.com/v1/forecast.json?key=082140be64aa4d8f983211532220404&q=${this.city}&aqi=yes&days=10`)
-            .then(response => {
-                if(response.status == 200){
-                    loading.hide()
-                    information.showInformation()
-                }else{
-                    error = new ErrorPage(response.status)
-                    error.showError()
-                }
-                return response.json()
-            })
-            .then(data => console.log(data))
+
+                fetch(`http://api.weatherapi.com/v1/forecast.json?key=082140be64aa4d8f983211532220404&q=${this.city}&aqi=yes&days=10`)
+                .then(response => {
+                    if(response.status == 200){
+                        loading.hide()
+                        // information.showInformation()
+                    }else{
+                        console.log("error happen")
+                        console.log(response)
+                        error = new ErrorPage("notfound")
+                        error.showError()
+                    }
+                    return response.json()
+                })
+                .then(data => {
+                    information = new InformationPage(data)
+                    information.headerSectionInformation()
+                })
+                .catch(err => {
+                    if (err == "TypeError: NetworkError when attempting to fetch resource."){
+                        error = new ErrorPage("internet")
+                        error.showError()
+                    }
+                })
+
         },2000)
     }
 }
@@ -71,11 +97,11 @@ class LoadingPage{
 
     showLoading(){
         showupOnePage()
-        this.display = "show"
-
+        
         this.loadingCon.style.display = "flex"
         this.loadingConHeader.style.animation = "scale-down-center 0.6s cubic-bezier(0.250, 0.460, 0.450, 0.940) 1s both"
         this.loader.style.animation = "scale-down-center 0.6s cubic-bezier(0.250, 0.460, 0.450, 0.940) 1.5s both"
+        this.display = "show"
     }
     hide(){
         this.display = "none"
@@ -92,36 +118,76 @@ class ErrorPage{
 
         this.erorr = error 
         this.errorCon = document.getElementById("error-con")
-        // this.showError()
-
+        this.errorShow = null
+        if(error == "internet"){
+            this.errorShow = document.getElementById("error-internet")
+            console.log(this.errorShow)
+        }else{
+            this.errorShow = document.getElementById("error-notfound")
+        }
+        
     }
 
     showError(){
         showupOnePage()
-        this.display = "show"
-
-        this.errorCon.style.display = "flex"
+        
+        
         this.errorCon.style.animation = "scale-down-center 0.6s cubic-bezier(0.250, 0.460, 0.450, 0.940) 1s both"
+        this.errorCon.style.display = "flex"
+        this.errorShow.style.display = "flex"
+        this.display = "show"
     }
     hide(){
         this.display = "none"
 
+        this.errorCon.style.animation = "fade 1s cubic-bezier(0.250, 0.460, 0.450, 0.940)  both"
         setTimeout(()=>{this.errorCon.style.display = "none"},1000)
-        this.errorCon.style.animation = "fade 0.9s cubic-bezier(0.250, 0.460, 0.450, 0.940)  both"
+        setTimeout(()=>{this.errorShow.style.display = "none"},1000)
 
     }
 }
 
 class InformationPage{
-    constructor(){
+    constructor(infos){
+        this.display = "none"
+        this.informations = infos
+        this.informationCon = document.getElementById("information")
+    }
+
+    createInformation(){
 
     }
+
+    headerSectionInformation(){
+        document.getElementById("header-location-city").innerHTML = `${this.informations["location"]["name"]}`
+        document.getElementById("header-location-main-city").innerHTML = `${this.informations["location"]["country"]}`
+        document.getElementById("header-totalTemp").getElementsByTagName("h2")[0].innerHTML = `${this.informations["current"]["temp_c"]}&#176;`
+        document.getElementById("header-date").innerHTML = `<h4>${monthNames[new Date().getMonth()]} ${new Date().getDate()} ${new Date().getFullYear()}</h4>`
+        document.getElementById("minTemp").getElementsByTagName("h4")[0].innerHTML = `${this.informations["forecast"]["forecastday"][0]["day"]["mintemp_c"]}&#176;`
+        document.getElementById("maxTemp").getElementsByTagName("h4")[0].innerHTML = `${this.informations["forecast"]["forecastday"][0]["day"]["maxtemp_c"]}&#176;`
+        document.getElementById("header-status").getElementsByTagName("h4")[0].innerHTML = `${this.informations["current"]["condition"]["text"]}`
+        // document.getElementById("header-status")
+        console.log(this.informations["forecast"]["forecastday"][0]["day"]["mintemp_c"])
+        this.showInformation()
+    }
+
 
     showInformation(){
-        console.log("information will displaied")
+        showupOnePage()
+        this.display = "show"
+
+        setTimeout(()=>{
+            this.informationCon.style.display ="flex"
+        } , 1000)
+        this.informationCon.style.animation ="scale-down-center 1s cubic-bezier(0.250, 0.460, 0.450, 0.940)  both"
+
     }
 
-    hide(){}
+    hide(){
+        this.display = "none"
+        this.informationCon.style.animation ="fade 0.9s cubic-bezier(0.250, 0.460, 0.450, 0.940)  both"
+        setTimeout(()=>{this.informationCon.style.display ="none"},1000)
+    }
 }
 
 
@@ -235,11 +301,6 @@ function navbuttonHandle(e){
 
 
 
-const monthNames = ["January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December"
-];
-
-let infos = document.getElementById("information")
 
 
 let hourlyInfo = document.getElementById("information-hourly-con")
@@ -282,10 +343,6 @@ for(let i = 0 ; i != hourlyMInfo.getElementsByTagName("div").length ; i++){
 
 
 
-
-let date =  new Date()
-
-document.getElementById("header-date").innerHTML = `<h4>${monthNames[date.getMonth()]} ${date.getDate()} ${date.getFullYear()}</h4>`
 
 
 
