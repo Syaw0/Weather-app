@@ -330,11 +330,13 @@ align-items: center;
 
 #information-hourly-mcon>*{
     margin-right: 0.5rem;
+    margin-left: 0.5rem;
     cursor: default;
     padding: 0rem 0.5rem;
+    margin-top: 0.5rem;
 }
 
-#information-hourly{
+.information-hourly{
     padding: 0.6rem;
     display: flex;
     flex-direction: column;
@@ -343,11 +345,12 @@ align-items: center;
     /* border: 1px solid sandybrown; */
     width: auto;
     height: auto;
+
     
 }
 
-#information-hourly>*{
-    padding: 0.2rem;
+.information-hourly>*{
+    padding: 0.3rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -403,10 +406,12 @@ cursor: pointer;
 #information-daily-mcon{
     display: inline-flex;
     width: auto;
-    margin-top: 1.5rem; 
+    margin-top: 1rem; 
 }
 
-#information-daily{
+
+
+.information-daily{
     padding: 0.6rem;
     display: flex;
     flex-direction: column;
@@ -415,14 +420,16 @@ cursor: pointer;
     /* border: 1px solid sandybrown; */
     width: auto;
     height: auto;
+    
 }
+
 #information-daily-mcon>*{
     margin-right: 0.4rem;
     cursor: default;
 }
 
-#information-daily>*{
-    padding: 0.2rem;
+.information-daily>*{
+    padding: 0.3em;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -439,7 +446,7 @@ cursor: pointer;
     width: 100%;
     height: 0px;
     position: absolute;;
-    bottom:-20px;
+    bottom:-40px;
     animation: none;
 }
 
@@ -471,7 +478,7 @@ cursor: pointer;
     border: none;
 }
 
-#information-detail-info{
+.information-detail-info{
     display: flex;
     justify-content: center;
     align-items: center;
@@ -479,7 +486,7 @@ cursor: pointer;
     height: 100%;
 }
 
-#information-detail-info>*{
+.information-detail-info>*{
     cursor: default;
 }
 
@@ -508,6 +515,10 @@ font-weight: bold;}
     padding:0rem 0.7rem 0rem 0.2rem;
 }
 
+.information-daily-hourly-icon{
+    filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(305deg) brightness(103%) contrast(103%);
+    width: 1.8rem;
+}
 
 @media only screen and (max-width : 500px){
 
@@ -637,7 +648,7 @@ font-weight: bold;}
 
         display: none;
     }
-    #information-hourly{
+    .information-hourly{
         padding: 1rem;
     }
     #information-hourly-mcon{
@@ -669,7 +680,7 @@ margin-top: 1.7rem;
 
     }
     
-    #information-daily{
+    .information-daily{
         padding: 1rem;;
         margin-right: 0.5rem;
 
@@ -678,7 +689,7 @@ margin-top: 1.7rem;
 
     }
     
-    #information-daily>*{
+    .information-daily>*{
 
     }
     #information-hourly-daily-con{
@@ -713,12 +724,12 @@ margin-top: 1.7rem;
         height: inherit;
         display: flex;
     }
-    #information-detail-info{
+    .information-detail-info{
         flex-direction: column  ;
         padding: 1rem;
         margin-left: 0.5rem;
     }
-    #information-detail-info>*{
+    .information-detail-info>*{
         margin: 0.3rem 0rem;
         cursor: pointer;
     }
@@ -787,7 +798,7 @@ margin-top: 1.7rem;
         width: 160px;
     }
     #home{
-        font-size: 20px;
+        font-size: 18px;
     }
     #loading-con{
         font-size: 18px;

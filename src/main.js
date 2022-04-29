@@ -29,8 +29,7 @@ class RequestData{
                         loading.hide()
                         // information.showInformation()
                     }else{
-                        console.log("error happen")
-                        console.log(response)
+
                         error = new ErrorPage("notfound")
                         error.showError()
                     }
@@ -38,7 +37,8 @@ class RequestData{
                 })
                 .then(data => {
                     information = new InformationPage(data)
-                    information.headerSectionInformation()
+                    information.createInformation()
+
                 })
                 .catch(err => {
                     if (err == "TypeError: NetworkError when attempting to fetch resource."){
@@ -121,7 +121,6 @@ class ErrorPage{
         this.errorShow = null
         if(error == "internet"){
             this.errorShow = document.getElementById("error-internet")
-            console.log(this.errorShow)
         }else{
             this.errorShow = document.getElementById("error-notfound")
         }
@@ -152,10 +151,14 @@ class InformationPage{
         this.display = "none"
         this.informations = infos
         this.informationCon = document.getElementById("information")
+        
     }
 
     createInformation(){
-
+        this.detailSectionInformation()
+        this.headerSectionInformation()
+        this.hourlySectionInformation()
+        this.dailySectionInformation()
     }
 
     headerSectionInformation(){
@@ -167,7 +170,173 @@ class InformationPage{
         document.getElementById("maxTemp").getElementsByTagName("h4")[0].innerHTML = `${this.informations["forecast"]["forecastday"][0]["day"]["maxtemp_c"]}&#176;`
         document.getElementById("header-status").getElementsByTagName("h4")[0].innerHTML = `${this.informations["current"]["condition"]["text"]}`
         this.handleIcons()
+
         this.showInformation()
+    }
+
+
+    hourlySectionInformation(){
+        let isFrist = true
+        let currentTime = new Date().toString().split(" ")[4].split(":")[0]
+        document.getElementById("information-hourly-mcon").innerHTML = ""
+        let dailyObj = this.informations["forecast"]["forecastday"]
+        let daynumber = 0 
+        for(let hour = currentTime  ; hour != dailyObj[daynumber]["hour"].length + 1  ; hour++){
+
+            if(hour == 24){
+
+                daynumber += 1
+                currentTime = 0
+                hour = 0
+
+                if(daynumber >2){
+                    return
+                }
+            }
+
+
+            let dailyInformation = document.createElement("div")
+            dailyInformation.className = "information-hourly"
+            dailyInformation.innerHTML = `<h4 class="information-hourly-day">  </h4> <h4 class="information-hourly-icon"> </h4><h4 class="information-hourly-temp"> </h4>`
+            
+            //time 
+            let timevalue = dailyObj[0]["hour"][hour]["time"].split(" ")[1].split(":")[0]
+
+            if(hour == currentTime){
+                dailyInformation.style.borderLeft = "4px solid var(--co4)"
+                if(isFrist){
+                timevalue = "now";
+                dailyInformation.style.borderLeft = "none"
+                } 
+                }
+
+            dailyInformation.getElementsByClassName("information-hourly-day")[0].innerHTML = `${timevalue}`
+
+            //handle icon
+            
+            let iconNum = dailyObj[daynumber]["hour"][hour]["condition"]["icon"].split("/").slice(-1)[0].split(".")[0]
+            console.log(iconNum , dailyObj[daynumber])
+            let DayorNight = null
+            dailyObj[daynumber]["hour"][hour]['condition']["icon"].search("night") == -1 ? DayorNight = "d": DayorNight = "n"
+            if(isFrist){
+                iconNum = this.informations['current']['condition']['icon'].split("/").slice(-1)[0].split(".")[0];
+                isFrist = false
+            }
+            //i can do better 
+           import(`./assests/icons/${DayorNight}${iconNum}.svg`)
+           .then(svg => {
+               let icon = new Image()
+               icon.src = svg.default
+               icon.className="information-daily-hourly-icon"
+               dailyInformation.getElementsByClassName("information-hourly-icon")[0].appendChild(icon)
+           })
+           .catch(err => console.log(err))
+           
+        //    //add temp
+            dailyInformation.getElementsByClassName("information-hourly-temp")[0].innerHTML = ` ${dailyObj[daynumber]["hour"][hour]["temp_c"]}&#176;`
+        //    //add to element
+            document.getElementById("information-hourly-mcon").appendChild(dailyInformation)
+
+
+        }
+
+    }
+
+    dailySectionInformation(){
+        let dailyObj = this.informations["forecast"]["forecastday"]
+        document.getElementById("information-daily-mcon").innerHTML = ""
+        
+        for(let day = 0 ; day != dailyObj.length ; day++){
+
+            let dailyInformation = document.createElement("div")
+            dailyInformation.className = "information-daily"
+            dailyInformation.innerHTML = `<h4 class="information-daily-day">  </h4> <h4 class="information-daily-icon"> </h4><h4 class="information-daily-temp"> </h4>`
+            
+            //day name
+            let dayName = new Date(dailyObj[day]["date"]).toDateString().split(" ")[0]
+            dailyInformation.getElementsByClassName("information-daily-day")[0].innerHTML = `${dayName}`
+            
+            //handle icon
+            let iconNum = dailyObj[day]["day"]["condition"]["icon"].split("/").slice(-1)[0].split(".")[0]
+            let DayorNight = null
+            dailyObj[day]['day']['condition']["icon"].search("night") == -1 ? DayorNight = "d": DayorNight = "n"
+
+            //i can do better 
+           import(`./assests/icons/${DayorNight}${iconNum}.svg`)
+           .then(svg => {
+               let icon = new Image()
+               icon.src = svg.default
+               icon.className="information-daily-hourly-icon"
+               dailyInformation.getElementsByClassName("information-daily-icon")[0].appendChild(icon)
+           })
+           .catch(err => console.log(err))
+           
+           //add temp
+            dailyInformation.getElementsByClassName("information-daily-temp")[0].innerHTML = ` ${dailyObj[day]["day"]["avgtemp_c"]} &#176; `
+           //add to element
+            document.getElementById("information-daily-mcon").appendChild(dailyInformation)
+            animationHandle()
+        }
+
+    }
+
+
+    detailSectionInformation(){
+        let detailObj = this.informations["current"]
+        document.getElementById("detail-Pressure").getElementsByTagName("h4")[2].innerHTML = `${detailObj["pressure_mb"]}`
+
+        let qualityMsg = ""
+        switch(detailObj["air_quality"]["us-epa-index"]){
+            case 1:
+                qualityMsg = "Good"
+                break;
+            
+            case 2:
+                qualityMsg = "Moderate"
+                break;
+
+            case 3:
+                qualityMsg = "Unhealthy for sensitive group"
+                break;
+
+            case 4:
+                qualityMsg = "Unhealthy"
+                break;
+
+            case 5:
+                qualityMsg = "Very Unhealthy"
+                break;
+
+            case 6:
+                qualityMsg = "Hazardous"
+                break;
+                
+        }
+        document.getElementById("detail-quality").getElementsByTagName("h4")[2].innerHTML = `${qualityMsg}`
+        document.getElementById("detail-wind").getElementsByTagName("h4")[2].innerHTML = `${detailObj["wind_kph"]}`
+        document.getElementById("detail-rain").getElementsByTagName("h4")[2].innerHTML = `${this.informations["forecast"]["forecastday"][0]["day"]["daily_chance_of_rain"]}%`
+        document.getElementById("detail-humidity").getElementsByTagName("h4")[2].innerHTML = `${detailObj["humidity"]}`
+        document.getElementById("detail-moon").getElementsByTagName("h4")[2].innerHTML = `${this.informations["forecast"]["forecastday"][0]["astro"]["moon_illumination"]}%`
+        document.getElementById("detail-sunrise").getElementsByTagName("h4")[2].innerHTML = `${this.informations["forecast"]["forecastday"][0]["astro"]["sunrise"].split(" ")[0]}`
+        document.getElementById("detail-sunset").getElementsByTagName("h4")[2].innerHTML = `${this.informations["forecast"]["forecastday"][0]["astro"]["sunset"].split(" ")[0]}`
+        
+        
+    }
+
+    handleIcons(){
+        let iconNum = this.informations['current']['condition']['icon'].split("/").slice(-1)[0].split(".")[0]
+        let DayorNight = null
+        this.informations['current']['condition']['icon'].search("night") == -1 ? DayorNight = "d": DayorNight = "n"
+
+        import(`./assests/icons/${DayorNight}${iconNum}.svg`)
+        .then(svg => {
+            let icon = new Image()
+            icon.src = svg.default
+            icon.className="information-header-icon"
+            document.getElementById("header-icon").innerHTML = ""
+            document.getElementById("header-icon").appendChild(icon)
+        })
+        .catch(err => console.log(err))
     }
 
 
@@ -189,21 +358,7 @@ class InformationPage{
     }
 
 
-    handleIcons(){
-        let iconNum = this.informations['current']['condition']['icon'].split("/").slice(-1)[0].split(".")[0]
-        let DayorNight = null
-        this.informations['current']['condition']['icon'].search("night") == -1 ? DayorNight = "d": DayorNight = "n"
-        console.log(`./assests/icons/${DayorNight}${iconNum}.svg`)
-        import(`./assests/icons/${DayorNight}${iconNum}.svg`)
-        .then(svg => {
-            let icon = new Image()
-            icon.src = svg.default
-            icon.className="information-header-icon"
-            document.getElementById("header-icon").innerHTML = ""
-            document.getElementById("header-icon").appendChild(icon)
-        })
-        .catch(err => console.log(err))
-    }
+
 
 }
 
@@ -344,19 +499,23 @@ detailInfo.addEventListener("wheel", (e)=>{
 
 //animation for items 
 
-for(let i = 0 ; i != dailyMInfo.getElementsByTagName("div").length ; i++){
-    dailyMInfo.getElementsByTagName("div")[i].style.animation = `slide-in-top 0.6s cubic-bezier(0.250, 0.460, 0.450, 0.940) ${i*0.07}s  both`
+function animationHandle(){
+    for(let i = 0 ; i != dailyMInfo.getElementsByTagName("div").length ; i++){
+        dailyMInfo.getElementsByTagName("div")[i].style.animation = `slide-in-top 0.6s cubic-bezier(0.250, 0.460, 0.450, 0.940) ${i*0.07}s  both`
+    }
+    
+    for(let i = 0 ; i != detailInfo.getElementsByTagName("div").length ; i++){
+        detailInfo.getElementsByTagName("div")[i].style.animation = `slide-in-top 0.6s cubic-bezier(0.250, 0.460, 0.450, 0.940) ${i*0.07}s  both`
+    }
+    
+    for(let i = 0 ; i != hourlyMInfo.getElementsByTagName("div").length ; i++){
+        hourlyMInfo.getElementsByTagName("div")[i].style.animation = `slide-in-top 0.6s cubic-bezier(0.250, 0.460, 0.450, 0.940) ${i*0.07}s  both`
+    }
+
 }
 
-for(let i = 0 ; i != detailInfo.getElementsByTagName("div").length ; i++){
-    detailInfo.getElementsByTagName("div")[i].style.animation = `slide-in-top 0.6s cubic-bezier(0.250, 0.460, 0.450, 0.940) ${i*0.07}s  both`
-}
 
-for(let i = 0 ; i != hourlyMInfo.getElementsByTagName("div").length ; i++){
-    hourlyMInfo.getElementsByTagName("div")[i].getElementsByTagName("h4")[0].innerHTML = `${i+1}AM`
-    hourlyMInfo.getElementsByTagName("div")[i].style.animation = `slide-in-top 0.6s cubic-bezier(0.250, 0.460, 0.450, 0.940) ${i*0.07}s  both`
-}
-
+animationHandle()
 
 
 
