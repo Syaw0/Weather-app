@@ -166,8 +166,7 @@ class InformationPage{
         document.getElementById("minTemp").getElementsByTagName("h4")[0].innerHTML = `${this.informations["forecast"]["forecastday"][0]["day"]["mintemp_c"]}&#176;`
         document.getElementById("maxTemp").getElementsByTagName("h4")[0].innerHTML = `${this.informations["forecast"]["forecastday"][0]["day"]["maxtemp_c"]}&#176;`
         document.getElementById("header-status").getElementsByTagName("h4")[0].innerHTML = `${this.informations["current"]["condition"]["text"]}`
-        // document.getElementById("header-status")
-        console.log(this.informations["forecast"]["forecastday"][0]["day"]["mintemp_c"])
+        this.handleIcons()
         this.showInformation()
     }
 
@@ -188,6 +187,24 @@ class InformationPage{
         this.informationCon.style.animation ="fade 0.9s cubic-bezier(0.250, 0.460, 0.450, 0.940)  both"
         setTimeout(()=>{this.informationCon.style.display ="none"},1000)
     }
+
+
+    handleIcons(){
+        let iconNum = this.informations['current']['condition']['icon'].split("/").slice(-1)[0].split(".")[0]
+        let DayorNight = null
+        this.informations['current']['condition']['icon'].search("night") == -1 ? DayorNight = "d": DayorNight = "n"
+        console.log(`./assests/icons/${DayorNight}${iconNum}.svg`)
+        import(`./assests/icons/${DayorNight}${iconNum}.svg`)
+        .then(svg => {
+            let icon = new Image()
+            icon.src = svg.default
+            icon.className="information-header-icon"
+            document.getElementById("header-icon").innerHTML = ""
+            document.getElementById("header-icon").appendChild(icon)
+        })
+        .catch(err => console.log(err))
+    }
+
 }
 
 

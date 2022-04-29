@@ -253,7 +253,15 @@ padding: 0.5rem;}
 }
 #header-icon{
     grid-area: icon ;
+    
 }
+/* change svg color with a filter */
+.information-header-icon{
+    width: 3rem;
+    filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(305deg) brightness(103%) contrast(103%);
+}
+
+
 #header-status{
     grid-area: status;
 }
@@ -503,6 +511,7 @@ font-weight: bold;}
 
 @media only screen and (max-width : 500px){
 
+
 }
 
 @media only screen and (min-width : 305px){
@@ -731,7 +740,11 @@ margin-top: 1.7rem;
 
                 }
 
+                #header-icon img {
+                    width: 4rem;
+                    }
 }
+
 
 @media only screen and (min-width : 850px){
     #home-content-header1{
@@ -745,7 +758,9 @@ margin-top: 1.7rem;
         font-size: 22px;
     }
     #home-illustration{margin-top: 3rem;}
-
+    #header-icon img {
+        width: 5.5rem;
+        }
 }
 
 
