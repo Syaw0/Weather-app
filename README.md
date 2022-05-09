@@ -28,6 +28,7 @@ My goal is to increase my Frontend skill , and i also use an some API to return 
 ## API 
 
 This is API i used for this project : [Weather API](https://www.weatherapi.com)
+
 </br>
 
 ## DEMO
