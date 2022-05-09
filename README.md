@@ -14,10 +14,12 @@ My goal is to increase my Frontend skill , and i also use an some API to return 
 - Work on logic and script file and reduce bad codes
 - Rewrite the project with React
 
-### API 
+
+## API 
 
 This is API i used for this project : [Weather API](https://www.weatherapi.com)
 
-#### DEMO
+
+## DEMO
 
  [![FlappyBird](https://user-images.githubusercontent.com/90524474/167434296-dca34d5c-a76b-4d5f-9f3d-ed9d69201b77.png)](https://weather-app-tau-swart.vercel.app/)
